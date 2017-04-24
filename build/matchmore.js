@@ -1922,8 +1922,13 @@ var LocationManager = (function () {
     };
     LocationManager.prototype.startUpdatingLocation = function () {
         var _this = this;
+        var watchOptions = {
+            timeout: 60 * 60 * 1000,
+            maxAge: 0,
+            enableHighAccuracy: true
+        };
         if (navigator.geolocation) {
-            this.geoId = navigator.geolocation.watchPosition(function (loc) { _this.onLocationReceived(loc); }, this.onError);
+            this.geoId = navigator.geolocation.watchPosition(function (loc) { _this.onLocationReceived(loc); }, this.onError, watchOptions);
         }
         else {
             throw new Error("Geolocation is not supported in this browser/app");
@@ -1953,8 +1958,13 @@ var LocationManager = (function () {
             altitude = parseFloat(loc.coords.altitude);
         else
             altitude = 0;
+        altitude = 0;
         this.onLocationUpdate(loc);
-        this.manager.updateLocation(latitude, longitude, altitude, 1.0, 1.0);
+        try {
+            this.manager.updateLocation(latitude, longitude, altitude, 1.0, 1.0);
+        }
+        catch (e) {
+        }
     };
     LocationManager.prototype.onError = function (error) {
         switch (error.code) {

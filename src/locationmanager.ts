@@ -17,8 +17,13 @@ export class LocationManager {
     }
 
     public startUpdatingLocation() {
+        let watchOptions = {
+            timeout: 60 * 60 * 1000,
+            maxAge: 0,
+            enableHighAccuracy: true
+        };
         if (navigator.geolocation) {
-            this.geoId = navigator.geolocation.watchPosition((loc) => { this.onLocationReceived(loc) }, this.onError);
+            this.geoId = navigator.geolocation.watchPosition((loc) => { this.onLocationReceived(loc) }, this.onError, watchOptions);
         } else {
             throw new Error("Geolocation is not supported in this browser/app")
         }
@@ -50,8 +55,16 @@ export class LocationManager {
         else
             altitude = 0; // Default value, TODO: use an altitude API?
 
+        //TODO: Allow user to specify not to use altitude (forcing to some value)
+        altitude = 0;
+
         this.onLocationUpdate(loc);
-        this.manager.updateLocation(latitude, longitude, altitude, 1.0, 1.0);
+        try {
+            this.manager.updateLocation(latitude, longitude, altitude, 1.0, 1.0);
+        }
+        catch (e) {
+            // Allow to update location even when there is no device / user created
+        }
     }
 
     private onError(error) {
