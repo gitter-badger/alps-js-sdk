@@ -1985,7 +1985,7 @@ exports.LocationManager = LocationManager;
 },{}],6:[function(require,module,exports){
 "use strict";
 exports.__esModule = true;
-var ScalpsCoreRestApi = require("scalps_core_rest_api");
+var ScalpsCoreRestApi = require("matchmore_core_rest_api");
 var matchmonitor_1 = require("./matchmonitor");
 var locationmanager_1 = require("./locationmanager");
 var Manager = (function () {
@@ -2232,7 +2232,7 @@ var Manager = (function () {
 }());
 exports.Manager = Manager;
 
-},{"./locationmanager":5,"./matchmonitor":7,"scalps_core_rest_api":18}],7:[function(require,module,exports){
+},{"./locationmanager":5,"./matchmonitor":7,"matchmore_core_rest_api":18}],7:[function(require,module,exports){
 "use strict";
 exports.__esModule = true;
 var MatchMonitor = (function () {

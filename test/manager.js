@@ -236,6 +236,34 @@ describe('Manager', function () {
 			};
         });
 	});
+    describe('getUser()', function () {
+        it('should return an user when it has been created', function () {
+            var mgr = new manager.Manager(apiKey, apiLocation);
+			return mgr.createUser(sampleUser.name).then((user) => {
+				return mgr.getUser(user.userId).then((retUser)=>{
+					retUser.should.have.property("userId");
+					retUser.userId.should.equal(user.userId);
+					retUser.should.have.property("name");
+					retUser.name.should.equal(user.name);
+				});
+			});
+        });
+	});
+    describe('getDevice()', function () {
+        it('should return a device when it has been created', function () {
+            var mgr = new manager.Manager(apiKey, apiLocation);
+			return mgr.createUser(sampleUser.name).then((user) => {
+				return mgr.createDevice(sampleDevice.deviceName, sampleDevice.platform, sampleDevice.deviceToken, sampleDevice.latitude, sampleDevice.longitude, sampleDevice.altitude, sampleDevice.horizontalAccuracy, sampleDevice.verticalAccuracy).then((device) => {
+					return mgr.getDevice(user.userId, device.deviceId).then((retDevice)=>{
+					  retDevice.should.have.property("deviceId");
+					  retDevice.deviceId.should.equal(device.deviceId);
+					  retDevice.should.have.property("name");
+					  retDevice.name.should.equal(device.name);
+				  });
+				});
+			});
+        });
+	});
     describe('getAllMatches()', function () {
         it('should not allow to be called before createUser and createDevice', function () {
 			var mgr = new manager.Manager(apiKey, apiLocation);

@@ -1,4 +1,4 @@
-import ScalpsCoreRestApi = require('scalps_core_rest_api');
+import ScalpsCoreRestApi = require('matchmore_core_rest_api');
 import { MatchMonitor } from './matchmonitor';
 import { LocationManager } from './locationmanager';
 
@@ -181,6 +181,45 @@ export class Manager {
         });
         return p;
     }
+
+    public getUser(userId: String, completion?: (user: ScalpsCoreRestApi.User) => void) {
+        let p = new Promise((resolve, reject) => {
+            let api = new ScalpsCoreRestApi.UserApi();
+            let callback = function(error, data, response) {
+                if (error && error != "TypeError: data.map is not a function") {
+                    reject("An error has occured while fetching user " + userId + ": " + error)
+                } else {
+                    // Ensure that the json response is sent as pure as possible, sometimes data != response.text. Swagger issue?
+                    resolve(JSON.parse(response.text));
+                }
+            };
+            api.getUser(userId, callback);
+        });
+        p.then((user: ScalpsCoreRestApi.User) => {
+            if (completion) completion(user);
+        });
+        return p;
+    }
+
+    public getDevice(userId: String, deviceId: String, completion?: (device: ScalpsCoreRestApi.Device) => void) {
+        let p = new Promise((resolve, reject) => {
+            let api = new ScalpsCoreRestApi.DeviceApi();
+            let callback = function(error, data, response) {
+                if (error && error != "TypeError: data.map is not a function") {
+                    reject("An error has occured while fetching device " + deviceId + ": " + error)
+                } else {
+                    // Ensure that the json response is sent as pure as possible, sometimes data != response.text. Swagger issue?
+                    resolve(JSON.parse(response.text));
+                }
+            };
+            api.getDevice(userId, deviceId, callback);
+        });
+        p.then((user: ScalpsCoreRestApi.User) => {
+            if (completion) completion(user);
+        });
+        return p;
+    }
+
 
     public getAllMatches(completion?: (matches: ScalpsCoreRestApi.Match[]) => void) {
         if (this.defaultUser && this.defaultDevice) {
