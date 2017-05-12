@@ -267,6 +267,25 @@ export class Manager {
         return p;
     }
 
+    public deletePublication(userId: String, deviceId: String, publicationId, completion?: void) {
+        let p = new Promise((resolve, reject) => {
+            let api = new ScalpsCoreRestApi.PublicationApi();
+            let callback = function(error, data, response) {
+                if (error && error != "TypeError: data.map is not a function") {
+                    reject("An error has occured while deleting publication " + publicationId + ": " + error)
+                } else {
+                    // Ensure that the json response is sent as pure as possible, sometimes data != response.text. Swagger issue?
+                    resolve(JSON.parse(response.text));
+                }
+            };
+            api.deletePublication(userId, deviceId, publicationId, callback);
+        });
+        p.then({
+            if(completion) { completion(); }
+        });
+        return p;
+    }
+
     public getAllPublicationsForDevice(userId: String, deviceId: String, completion?: (publications: ScalpsCoreRestApi.Publication[]) => void) {
         let p = new Promise((resolve, reject) => {
             let api = new ScalpsCoreRestApi.DeviceApi();

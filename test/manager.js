@@ -279,6 +279,20 @@ describe('Manager', function () {
 			});
         });
 	});
+    describe('deletePublication()', function () {
+        it('should delete a publication when asked to', function () {
+            var mgr = new manager.Manager(apiKey, apiLocation);
+			return mgr.createUser(sampleUser.name).then((user) => {
+				return mgr.createDevice(sampleDevice.deviceName, sampleDevice.platform, sampleDevice.deviceToken, sampleDevice.latitude, sampleDevice.longitude, sampleDevice.altitude, sampleDevice.horizontalAccuracy, sampleDevice.verticalAccuracy).then((device) => {
+					return mgr.createPublication(samplePublication.topic, samplePublication.range, samplePublication.duration, samplePublication.properties).then((publication)=>{
+						return mgr.deletePublication(user.userId, device.deviceId, publication.publicationId).then((retPub)=>{
+							retPub.should.equal(publication.publicationId);
+						});
+					});
+				});
+			});
+        });
+	});
     describe('getSubscription()', function () {
         it('should return a subscription when it has been created', function () {
             var mgr = new manager.Manager(apiKey, apiLocation);
