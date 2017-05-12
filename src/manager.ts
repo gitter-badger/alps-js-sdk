@@ -248,6 +248,25 @@ export class Manager {
         return p;
     }
 
+    public getPublication(userId: String, deviceId: String, publicationId, completion?: (device: ScalpsCoreRestApi.Publication) => void) {
+        let p = new Promise((resolve, reject) => {
+            let api = new ScalpsCoreRestApi.PublicationApi();
+            let callback = function(error, data, response) {
+                if (error && error != "TypeError: data.map is not a function") {
+                    reject("An error has occured while fetching publication " + publicationId + ": " + error)
+                } else {
+                    // Ensure that the json response is sent as pure as possible, sometimes data != response.text. Swagger issue?
+                    resolve(JSON.parse(response.text));
+                }
+            };
+            api.getPublication(userId, deviceId, publicationId, callback);
+        });
+        p.then((publication: ScalpsCoreRestApi.Publication) => {
+            if (completion) completion(publication);
+        });
+        return p;
+    }
+
     public getAllPublicationsForDevice(userId: String, deviceId: String, completion?: (publications: ScalpsCoreRestApi.Publication[]) => void) {
         let p = new Promise((resolve, reject) => {
             let api = new ScalpsCoreRestApi.DeviceApi();
