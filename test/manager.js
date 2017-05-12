@@ -279,6 +279,21 @@ describe('Manager', function () {
 			});
         });
 	});
+    describe('getSubscription()', function () {
+        it('should return a subscription when it has been created', function () {
+            var mgr = new manager.Manager(apiKey, apiLocation);
+			return mgr.createUser(sampleUser.name).then((user) => {
+				return mgr.createDevice(sampleDevice.deviceName, sampleDevice.platform, sampleDevice.deviceToken, sampleDevice.latitude, sampleDevice.longitude, sampleDevice.altitude, sampleDevice.horizontalAccuracy, sampleDevice.verticalAccuracy).then((device) => {
+					return mgr.createSubscription(sampleSubscription.topic, sampleSubscription.selector, sampleSubscription.range, sampleSubscription.duration).then((subscription)=>{
+						return mgr.getSubscription(user.userId, device.deviceId, subscription.subscriptionId).then((retSub)=>{
+							retSub.should.have.property("subscriptionId");
+							retSub.subscriptionId.should.equal(subscription.subscriptionId);
+						});
+					});
+				});
+			});
+        });
+	});
     describe('getAllMatches()', function () {
         it('should not allow to be called before createUser and createDevice', function () {
 			var mgr = new manager.Manager(apiKey, apiLocation);

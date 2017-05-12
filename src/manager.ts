@@ -283,6 +283,25 @@ export class Manager {
         return p;
     }
 
+    public getSubscription(userId: String, deviceId: String, subscriptionId, completion?: (device: ScalpsCoreRestApi.Subscription) => void) {
+        let p = new Promise((resolve, reject) => {
+            let api = new ScalpsCoreRestApi.SubscriptionApi();
+            let callback = function(error, data, response) {
+                if (error && error != "TypeError: data.map is not a function") {
+                    reject("An error has occured while fetching subscription " + subscriptionId + ": " + error)
+                } else {
+                    // Ensure that the json response is sent as pure as possible, sometimes data != response.text. Swagger issue?
+                    resolve(JSON.parse(response.text));
+                }
+            };
+            api.getSubscription(userId, deviceId, subscriptionId, callback);
+        });
+        p.then((subscription: ScalpsCoreRestApi.Subscription) => {
+            if (completion) completion(subscription);
+        });
+        return p;
+    }
+
     public getAllSubscriptionsForDevice(userId: String, deviceId: String, completion?: (subscriptions: ScalpsCoreRestApi.Subscription[]) => void) {
         let p = new Promise((resolve, reject) => {
             let api = new ScalpsCoreRestApi.DeviceApi();
