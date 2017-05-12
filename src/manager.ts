@@ -267,7 +267,7 @@ export class Manager {
         return p;
     }
 
-    public deletePublication(userId: String, deviceId: String, publicationId, completion?: void) {
+    public deletePublication(userId: String, deviceId: String, publicationId, completion?: () => void) {
         let p = new Promise((resolve, reject) => {
             let api = new ScalpsCoreRestApi.PublicationApi();
             let callback = function(error, data, response) {
@@ -280,8 +280,8 @@ export class Manager {
             };
             api.deletePublication(userId, deviceId, publicationId, callback);
         });
-        p.then({
-            if(completion) { completion(); }
+        p.then(() => {
+            if (completion) completion();
         });
         return p;
     }
