@@ -308,6 +308,20 @@ describe('Manager', function () {
 			});
         });
 	});
+    describe('deleteSubscription()', function () {
+        it('should delete a subscription when asked to', function () {
+            var mgr = new manager.Manager(apiKey, apiLocation);
+			return mgr.createUser(sampleUser.name).then((user) => {
+				return mgr.createDevice(sampleDevice.deviceName, sampleDevice.platform, sampleDevice.deviceToken, sampleDevice.latitude, sampleDevice.longitude, sampleDevice.altitude, sampleDevice.horizontalAccuracy, sampleDevice.verticalAccuracy).then((device) => {
+					return mgr.createSubscription(sampleSubscription.topic, sampleSubscription.selector, sampleSubscription.range, sampleSubscription.duration).then((subscription)=>{
+						return mgr.deleteSubscription(user.userId, device.deviceId, subscription.subscriptionId).then((retSub)=>{
+							retSub.should.equal(subscription.subscriptionId);
+						});
+					});
+				});
+			});
+        });
+	});
     describe('getAllMatches()', function () {
         it('should not allow to be called before createUser and createDevice', function () {
 			var mgr = new manager.Manager(apiKey, apiLocation);
